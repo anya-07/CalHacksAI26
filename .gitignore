@@ -1,0 +1,15 @@
+# secrets — NEVER commit
+.env
+**/.env
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# node / extension tooling (if added later)
+node_modules/
+
+# os
+.DS_Store
