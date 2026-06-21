@@ -20,23 +20,52 @@
 
   <form id="calfresh" onsubmit="event.preventDefault(); alert('You (the user) pressed submit — FormBridge never does this.');">
     <label for="full_name">Full legal name</label>
-    <input id="full_name" name="full_name" type="text" />
+    <input id="full_name" name="full_name" type="text" required />
 
     <label for="home_address">Home address</label>
-    <input id="home_address" name="home_address" type="text" />
+    <input id="home_address" name="home_address" type="text" required />
 
     <label for="household_size">Number of people in your household</label>
-    <input id="household_size" name="household_size" type="number" />
+    <input id="household_size" name="household_size" type="number" required />
     <div class="hint">Include everyone who lives with you and buys/prepares food together.</div>
 
     <label for="gross_income">Gross monthly household income (before taxes)</label>
-    <input id="gross_income" name="gross_income" type="text" />
+    <input id="gross_income" name="gross_income" type="text" required />
 
-    <label for="immigration_status">Citizenship / immigration status</label>
+    <label for="middle_name">Middle name (optional)</label>
+    <input id="middle_name" name="middle_name" type="text" />
+
+    <label for="immigration_status">Citizenship / immigration status (optional)</label>
     <input id="immigration_status" name="immigration_status" type="text" />
 
+    <label for="county">County of residence</label>
+    <select id="county" name="county" required>
+      <option value="">Select a county</option>
+      <option value="alameda">Alameda County</option>
+      <option value="sf">City and County of San Francisco</option>
+      <option value="la">Los Angeles County</option>
+    </select>
+
+    <fieldset style="margin-top:18px;border:1px solid #cbd5e1;border-radius:8px;">
+      <legend>Are you a U.S. citizen?</legend>
+      <label style="font-weight:400"><input type="radio" name="citizen" value="yes" required /> Yes</label>
+      <label style="font-weight:400"><input type="radio" name="citizen" value="no" /> No</label>
+    </fieldset>
+
+    <fieldset style="margin-top:18px;border:1px solid #cbd5e1;border-radius:8px;">
+      <legend>Do you have any dependents?</legend>
+      <label style="font-weight:400"><input type="radio" name="has_dependents" value="yes" required
+        onclick="document.getElementById('dep_wrap').style.display='block'" /> Yes</label>
+      <label style="font-weight:400"><input type="radio" name="has_dependents" value="no"
+        onclick="document.getElementById('dep_wrap').style.display='none'" /> No</label>
+    </fieldset>
+    <div id="dep_wrap" style="display:none">
+      <label for="num_dependents">Number of dependents</label>
+      <input id="num_dependents" name="num_dependents" type="number" required />
+    </div>
+
     <label for="signature">Signature — I declare under penalty of perjury the above is true</label>
-    <input id="signature" name="signature" type="text" />
+    <input id="signature" name="signature" type="text" required />
 
     <button type="submit">Submit application</button>
   </form>

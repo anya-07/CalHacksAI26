@@ -6,7 +6,9 @@
 // MOCK=false -> the background worker calls the bridge server at BACKEND_URL,
 //               which forwards into the uAgents society (Deepgram/Claude/Redis).
 self.FORMBRIDGE_CONFIG = {
-  MOCK: true,
+  MOCK: false, // false = use the real bridge (ASI:One + Claude + Redis + Deepgram)
   BACKEND_URL: "http://localhost:8088",
-  LANG: "es-ES" // spoken language for TTS/STT
+  DEFAULT_LANG: "en", // "es" or "en" — user can switch with the toggle in the panel
+  USE_DEEPGRAM_TTS: true, // speak questions via Deepgram; falls back to browser voice
+  USE_DEEPGRAM_STT: true // listen via Deepgram (record + /stt); falls back to browser speech
 };

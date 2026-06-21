@@ -9,8 +9,19 @@ importScripts("config.js");
 const CFG = self.FORMBRIDGE_CONFIG;
 
 // ---- toolbar click -> tell the active tab to show/hide the panel ----
+// If the content script isn't loaded yet (tab opened before the extension, or
+// never refreshed), inject it on demand, then toggle. Errors are swallowed so
+// nothing shows up in the extension's error log (e.g. on chrome:// pages where
+// content scripts simply can't run).
 chrome.action.onClicked.addListener((tab) => {
-  if (tab.id) chrome.tabs.sendMessage(tab.id, { type: "FORMBRIDGE_TOGGLE" });
+  if (!tab.id) return;
+  chrome.tabs.sendMessage(tab.id, { type: "FORMBRIDGE_TOGGLE" }, () => {
+    if (!chrome.runtime.lastError) return; // content script was already there
+    chrome.scripting.insertCSS({ target: { tabId: tab.id }, files: ["panel.css"] })
+      .then(() => chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ["config.js", "content.js"] }))
+      .then(() => chrome.tabs.sendMessage(tab.id, { type: "FORMBRIDGE_TOGGLE" }, () => void chrome.runtime.lastError))
+      .catch(() => { /* restricted page (chrome://, web store, etc.) — can't inject */ });
+  });
 });
 
 // ---- API routing ----
@@ -41,26 +52,23 @@ const UNCERTAIN_RE = /(no s[eé]|no estoy segur|no entiendo|tal vez|creo que)/i;
 
 function mock(path, body) {
   if (path === "/simplify") {
-    return { question_es: simplifyES(body.label) };
+    return { question: simplifyES(body.label) };
   }
   if (path === "/process_field") {
     const sensitive = body.sensitive || SENSITIVE_RE.test(body.label);
-    const ans = (body.answer_es || "").toLowerCase();
+    const ans = (body.answer || "").toLowerCase();
     const unclear = UNCERTAIN_RE.test(ans) || ans.trim() === "";
     const confidence = unclear ? 0.45 : 0.9;
     let needs_review = false;
-    let reason_es = "";
-    if (sensitive && unclear) {
+    let reason = "";
+    if (sensitive) {
       needs_review = true;
-      reason_es = "Campo delicado y su respuesta no fue clara. Revíselo con cuidado.";
-    } else if (sensitive) {
-      needs_review = true;
-      reason_es = "Este campo es delicado (ingresos, estatus o firma). Por favor confírmelo.";
+      reason = "Este campo es delicado (ingresos, estatus o firma). Por favor confírmelo.";
     } else if (unclear) {
       needs_review = true;
-      reason_es = "No quedó claro. Por favor verifique esta respuesta.";
+      reason = "No quedó claro. Por favor verifique esta respuesta.";
     }
-    return { value_en: toValue(body.label, body.answer_es), confidence, needs_review, reason_es };
+    return { value_en: toValue(body.label, body.answer), confidence, needs_review, reason };
   }
   throw new Error("Unknown mock path " + path);
 }

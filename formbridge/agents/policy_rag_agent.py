@@ -30,23 +30,43 @@ _STUB_DEFS = {
 }
 
 
-def define(term: str) -> str:
-    """TODO: real Redis vector search.
+_redis = {}
 
-    import redis
-    from redis.commands.search.query import Query
-    r = redis.Redis.from_url(os.environ["REDIS_URL"])
-    vec = embed(term)
-    q = (Query("*=>[KNN 3 @embedding $vec AS score]")
-         .sort_by("score").return_fields("text", "source").dialect(2))
-    res = r.ft("policy_idx").search(q, {"vec": vec.tobytes()})
-    return "\\n".join(f"[{d.source}] {d.text}" for d in res.docs)
-    """
-    low = term.lower()
+
+def _redis_client():
+    if "r" not in _redis:
+        try:
+            import redis
+            url = os.getenv("REDIS_URL", "")
+            r = redis.Redis.from_url(url, decode_responses=True) if url else None
+            if r:
+                r.ping()
+                for k, v in _STUB_DEFS.items():
+                    r.hsetnx("formbridge:defs", k, v)  # seed grounded definitions once
+            _redis["r"] = r
+        except Exception as e:
+            print("Redis unavailable, using stub defs:", e)
+            _redis["r"] = None
+    return _redis["r"]
+
+
+def define(term: str) -> str:
+    """Look up a grounded policy definition in Redis (falls back to in-memory defs)."""
+    low = (term or "").lower()
+    r = _redis_client()
+    if r:
+        try:
+            for key in _STUB_DEFS:
+                if key in low:
+                    val = r.hget("formbridge:defs", key)
+                    if val:
+                        return val
+        except Exception as e:
+            print("Redis hget failed:", e)
     for key, text in _STUB_DEFS.items():
         if key in low:
             return text
-    return f"[STUB definition] No special policy definition needed for: {term}"
+    return f"No special policy definition needed for: {term}"
 
 
 @proto.on_message(ChatMessage)

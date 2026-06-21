@@ -35,9 +35,30 @@ _STUB_ANSWERS = {
 }
 
 
+DG_TTS_MODEL = os.getenv("DEEPGRAM_TTS_MODEL", "aura-2-celeste-es")
+
+
 def speak(text_es: str) -> str:
-    """TODO: Deepgram TTS (aura) -> play/return audio. Stub just logs."""
-    return f"[STUB TTS]: {text_es[:80]}"
+    """Deepgram TTS — synthesize the Spanish question to an mp3 and return its path.
+    (In the agent/CLI path there is no speaker, so we save the audio; the extension
+    plays Deepgram audio directly.) Falls back to a log line on any error."""
+    key = os.getenv("DEEPGRAM_API_KEY", "")
+    if key and text_es.strip():
+        try:
+            import httpx
+            r = httpx.post(
+                f"https://api.deepgram.com/v1/speak?model={DG_TTS_MODEL}",
+                headers={"Authorization": f"Token {key}", "Content-Type": "application/json"},
+                json={"text": text_es}, timeout=20)
+            if r.status_code == 200 and r.content:
+                path = "/tmp/formbridge_tts.mp3"
+                with open(path, "wb") as f:
+                    f.write(r.content)
+                return f"[Deepgram TTS -> {path}]"
+            print("Deepgram TTS non-200:", r.status_code)
+        except Exception as e:
+            print("Deepgram TTS failed:", e)
+    return f"[TTS fallback log]: {text_es[:80]}"
 
 
 def listen(prompt_es: str) -> str:

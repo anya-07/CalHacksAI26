@@ -1,10 +1,10 @@
 uagents
 uagents-core
 openai            # ASI:One LLM uses the OpenAI-compatible client (base_url=https://api.asi1.ai/v1)
-anthropic         # EligibilityAgent reasoning (Claude)
-redis             # PolicyRAGAgent vector search
-browserbase       # FormFillerAgent
+anthropic         # Interpreter + Review reasoning (Claude)
+redis             # PolicyRAG grounded definitions / cache
+httpx             # Deepgram REST calls (TTS/STT)
+browserbase       # optional autonomous draft-fill mode
 playwright        # drives the Browserbase session
-deepgram-sdk      # TranslatorAgent voice
 python-dotenv     # load .env
 # arize-phoenix   # optional: tracing/eval dashboard

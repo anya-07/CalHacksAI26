@@ -28,18 +28,49 @@ proto = chat_proto()
 # Phrases that signal the resident was unsure of their own answer.
 _UNCERTAIN = ("no sé", "no estoy segura", "no estoy seguro", "no entiendo", "tal vez", "creo que")
 
+CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-haiku-4-5-20251001")
+_claude = {}
+
+
+def _claude_client():
+    if "c" not in _claude:
+        try:
+            from anthropic import Anthropic
+            key = os.getenv("ANTHROPIC_API_KEY", "")
+            _claude["c"] = Anthropic(api_key=key) if key else None
+        except Exception:
+            _claude["c"] = None
+    return _claude["c"]
+
 
 def score_field(label, ftype, sensitive, answer_es, value_en):
-    """TODO: Claude — judge how confidently the Spanish answer maps to value_en,
-    and write a plain-Spanish reason when flagging. The rule-based version below
-    is a solid starting point.
+    """Claude judges confidence + writes a plain-Spanish reason; rules are the fallback.
+    Sensitive fields are ALWAYS surfaced for review regardless. Returns
+    (confidence: float 0-1, needs_review: bool, reason_es: str)."""
+    client = _claude_client()
+    if client and (answer_es or "").strip():
+        try:
+            import json
+            prompt = (
+                "Judge how confidently this Spanish answer maps to the English form value. "
+                "Return STRICT JSON: {confidence: 0-1 float, needs_review: bool, reason_es: short "
+                "plain-Spanish reason to double-check or empty}.\n"
+                f"Field: {label} | sensitive: {sensitive} | answer: {answer_es} | value: {value_en}")
+            m = client.messages.create(model=CLAUDE_MODEL, max_tokens=200,
+                                       messages=[{"role": "user", "content": prompt}])
+            t = "".join(b.text for b in m.content if getattr(b, "type", "") == "text")
+            d = json.loads(t[t.find("{"): t.rfind("}") + 1])
+            conf = round(float(d.get("confidence", 0.8)), 2)
+            nr = bool(d.get("needs_review", False)) or sensitive
+            reason = d.get("reason_es", "") or (
+                "Este campo es delicado. Por favor confírmelo." if sensitive else "")
+            return conf, nr, reason
+        except Exception as e:
+            print("Claude scoring failed, using rules:", e)
 
-    Returns (confidence: float 0-1, needs_review: bool, reason_es: str).
-    """
     low = (answer_es or "").lower()
     unclear = any(p in low for p in _UNCERTAIN) or not (value_en or "").strip()
     confidence = 0.45 if unclear else 0.9
-
     if sensitive and unclear:
         return confidence, True, "Campo delicado y su respuesta no fue clara. Revíselo con cuidado."
     if sensitive:

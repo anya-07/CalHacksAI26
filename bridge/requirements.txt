@@ -1,3 +1,8 @@
 fastapi
 uvicorn[standard]
 pydantic
+python-dotenv
+httpx
+openai          # ASI:One LLM (OpenAI-compatible endpoint)
+anthropic       # Claude (value extraction + review)
+redis           # grounding definitions + cache

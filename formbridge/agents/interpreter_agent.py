@@ -30,8 +30,42 @@ agent = make_agent("formbridge-interpreter", 8003, "INTERPRETER_SEED",
 proto = chat_proto()
 
 
+CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-haiku-4-5-20251001")
+_claude = {}
+
+
+def _claude_client():
+    if "c" not in _claude:
+        try:
+            from anthropic import Anthropic
+            key = os.getenv("ANTHROPIC_API_KEY", "")
+            _claude["c"] = Anthropic(api_key=key) if key else None
+        except Exception:
+            _claude["c"] = None
+    return _claude["c"]
+
+
+def _ask_claude(prompt: str) -> str:
+    client = _claude_client()
+    if not client:
+        return ""
+    try:
+        m = client.messages.create(model=CLAUDE_MODEL, max_tokens=300,
+                                   messages=[{"role": "user", "content": prompt}])
+        return "".join(b.text for b in m.content if getattr(b, "type", "") == "text").strip()
+    except Exception as e:
+        print("Claude call failed, using fallback:", e)
+        return ""
+
+
 def simplify_to_spanish(label: str, ftype: str) -> str:
-    """TODO: Claude — rewrite the English field as a simple spoken Spanish question."""
+    """Claude rewrites the English field as a simple spoken Spanish question."""
+    out = _ask_claude(
+        "Rewrite this US government form field as ONE short, simple, friendly spoken "
+        "question in Spanish (usted form), for a low-literacy speaker. Question only, no preamble.\n"
+        f"Field: {label} (type {ftype})")
+    if out:
+        return out
     samples = {
         "Gross monthly household income (before taxes)":
             "Antes de impuestos, ¿cuánto dinero gana todo su hogar en un mes?",
@@ -44,9 +78,12 @@ def simplify_to_spanish(label: str, ftype: str) -> str:
 
 
 def answer_to_value(label: str, ftype: str, answer_es: str, policy_context: str) -> str:
-    """TODO: Claude — convert the Spanish answer into the correct English field value,
-    using policy_context to interpret terms (what counts as income, household, etc.)."""
-    return f"[STUB EN value for '{label}' from '{answer_es}']"
+    """Claude converts the natural Spanish answer into the correct English field value."""
+    out = _ask_claude(
+        "Convert the applicant's Spanish answer into the correct English value for this form "
+        "field. Use the policy note to interpret terms. Reply with ONLY the value, nothing else.\n"
+        f"Field: {label} (type {ftype})\nPolicy: {policy_context}\nSpanish answer: {answer_es}")
+    return out or answer_es or f"[no value for {label}]"
 
 
 @proto.on_message(ChatMessage)
