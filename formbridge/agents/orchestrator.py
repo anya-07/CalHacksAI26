@@ -21,6 +21,7 @@ NOTE: this scaffold tracks a single active session in ctx.storage for clarity.
 For concurrent users, key the session state by an id you mint per request.
 """
 import os
+import re
 import json
 from datetime import datetime
 
@@ -58,6 +59,66 @@ async def _ack(ctx, sender, msg):
     )
 
 
+# ---- conversational replies on ASI:One (vs. running the per-field pipeline) ----
+_asi = {}
+
+
+def _asi_client():
+    if "c" not in _asi:
+        try:
+            from openai import OpenAI
+            key = os.getenv("ASI_ONE_API_KEY", "")
+            _asi["c"] = OpenAI(base_url="https://api.asi1.ai/v1", api_key=key) if key else None
+        except Exception:
+            _asi["c"] = None
+    return _asi["c"]
+
+
+FB_SYSTEM = (
+    "You are FormBridge, a friendly assistant that helps people fill out confusing English "
+    "government and benefits forms (CalFresh/SNAP, housing, utility relief, emergency aid) by "
+    "voice, in English or Spanish. You ask each form question in simple language, fill the correct "
+    "English answers, flag sensitive fields for review, and NEVER submit a form on the user's "
+    "behalf — you prepare a reviewable draft they confirm. Answer the user's question helpfully and "
+    "concisely. If they ask what information is needed, list common items: full legal name, home "
+    "address, date of birth, household size, gross monthly income, citizenship/immigration status "
+    "(often optional), and a signature. To fill an actual form, tell them to open it in their "
+    "browser and use the FormBridge Chrome extension."
+)
+
+# Treat as a "fill the form" command only if it's an imperative, not a question.
+_FILL_RE = re.compile(r"\b(fill|complete|start|run|llen|rellen|completa|empez|comenz)\w*", re.I)
+_QUESTION_RE = re.compile(r"\?|\b(what|how|which|why|who|advice|information|explain|tell me|"
+                          r"qu[eé]|c[oó]mo|cu[aá]l|por qu[eé]|informaci[oó]n|consejo|ayuda)\b", re.I)
+
+
+def _wants_fill(text: str) -> bool:
+    if _QUESTION_RE.search(text or ""):
+        return False
+    return bool(_FILL_RE.search(text or ""))
+
+
+def _chat_reply(text: str) -> str:
+    client = _asi_client()
+    if client:
+        try:
+            r = client.chat.completions.create(
+                model="asi1", max_tokens=400,
+                messages=[{"role": "system", "content": FB_SYSTEM},
+                          {"role": "user", "content": text}])
+            out = (r.choices[0].message.content or "").strip()
+            if out:
+                return out
+        except Exception as e:
+            print("ASI:One chat reply failed:", e)
+    return ("I'm FormBridge — I help you fill out English government and benefits forms by voice, in "
+            "English or Spanish. To apply for food assistance (CalFresh/SNAP), have ready: your full "
+            "legal name, home address, date of birth, household size, gross monthly income before "
+            "taxes, and citizenship/immigration status (often optional). I prepare a draft for you to "
+            "review and never submit it for you. To fill a real form, open it in your browser and use "
+            "the FormBridge Chrome extension.")
+
+
 @proto.on_message(ChatMessage)
 async def on_chat(ctx: Context, sender: str, msg: ChatMessage):
     await _ack(ctx, sender, msg)
@@ -65,7 +126,11 @@ async def on_chat(ctx: Context, sender: str, msg: ChatMessage):
     op = data.get("op")
 
     if op == "user_text":
-        await _start_session(ctx, sender, data.get("text", ""))
+        text = data.get("text", "")
+        if _wants_fill(text):
+            await _start_session(ctx, sender, text)         # run the multi-agent pipeline
+        else:
+            await ctx.send(sender, make_chat(_chat_reply(text), end_session=True))  # just talk
     elif op == "fields":          # reply from FormReader
         await _on_fields(ctx, data["fields"])
     elif op == "question_es":     # reply from Interpreter (simplified question)
