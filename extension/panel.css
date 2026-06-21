@@ -1,0 +1,74 @@
+#tribunal-panel {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 340px;
+  max-height: 80vh;
+  overflow-y: auto;
+  z-index: 2147483647;
+  background: #0e0e12;
+  color: #f4f4f6;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid #2a2a35;
+}
+#tribunal-panel.hidden { display: none; }
+
+#tribunal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  font-weight: 700;
+  font-size: 16px;
+  border-bottom: 1px solid #2a2a35;
+}
+#tribunal-close {
+  background: none; border: none; color: #aaa; font-size: 20px; cursor: pointer; line-height: 1;
+}
+
+#tribunal-question {
+  padding: 14px;
+  font-size: 16px;
+  line-height: 1.4;
+  background: #16161d;
+}
+#tribunal-status { padding: 6px 14px; color: #9aa0aa; min-height: 18px; }
+
+#tribunal-controls {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 14px;
+}
+#tribunal-controls button {
+  background: #5b3df5; color: #fff; border: none; border-radius: 8px;
+  padding: 8px 12px; font-weight: 600; cursor: pointer;
+}
+#tribunal-controls button#tribunal-stop { background: #2a2a35; }
+#tribunal-answer {
+  flex: 1 1 100%; background: #16161d; border: 1px solid #2a2a35; color: #fff;
+  border-radius: 8px; padding: 8px 10px;
+}
+
+#tribunal-draft { padding: 6px 14px 12px; }
+.tribunal-row {
+  background: #16161d; border: 1px solid #2a2a35; border-radius: 10px;
+  padding: 8px 10px; margin-top: 8px;
+}
+.tribunal-row.flag { border-color: #e6a800; background: #211d12; }
+.tribunal-row-top { display: flex; justify-content: space-between; }
+.tribunal-label { color: #c7cbd4; font-size: 12px; }
+.tribunal-conf { color: #7de28a; font-size: 12px; font-weight: 700; }
+.tribunal-row.flag .tribunal-conf { color: #e6a800; }
+.tribunal-val { font-weight: 600; margin-top: 2px; word-break: break-word; }
+.tribunal-review { color: #ffcf5c; font-size: 12px; margin-top: 6px; }
+
+.tribunal-note {
+  margin-top: 10px; padding: 10px; border-radius: 8px;
+  background: #12211a; color: #8fe6b0; font-size: 12px; line-height: 1.4;
+}
+#tribunal-foot { padding: 8px 14px 12px; color: #6b7280; font-size: 11px; }
+
+/* page-side highlights on the actual form fields */
+.tribunal-active { outline: 3px solid #5b3df5 !important; outline-offset: 2px; }
+.tribunal-flag { outline: 3px solid #e6a800 !important; outline-offset: 2px; }

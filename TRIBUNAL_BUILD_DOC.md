@@ -192,4 +192,31 @@ See the `tribunal/` folder — the multi-agent skeleton, already wired over the 
 - `policy_rag_agent.py` → **PolicyRAGAgent** (term definitions + answer memory) — unchanged in spirit.
 - `formfiller_agent.py` → **ReviewAgent** (confidence + Needs-Review) primary; Browserbase draft-fill optional.
 
-Each agent is the same ~40-line chat-protocol pattern, so once one works you can parallelize the rest across the three of you. Ask and I'll refactor the scaffold file-for-file to these final agent names with the per-field loop and confidence/flagging stubs in place.
+Each agent is the same ~40-line chat-protocol pattern, so once one works you can parallelize the rest across the three of you.
+
+---
+
+## 10. Front-end: the Chrome extension
+
+The user-facing layer is a Manifest V3 Chrome extension (`extension/`). It is the *delivery mechanism* over the agent backend — the reasoning still lives in the agents, which is what keeps the multi-agent / ASI:One story intact.
+
+**What it does:** injects a floating panel onto any web form, scrapes the fields, and runs the per-field loop in the browser — asks each question aloud in Spanish (Web Speech TTS), listens to the spoken answer (Web Speech STT), fills the English value into the real field on the page, highlights anything flagged **Needs Review**, and shows a running draft with confidence scores. It only ever fills; the user clicks submit.
+
+**Two modes (`extension/config.js`):**
+- `MOCK: true` (default) — fully standalone with built-in stub logic. Load it and demo the entire flow with **no backend running**. This is your safety net for stage.
+- `MOCK: false` — the background worker calls the **bridge** (`bridge/`, FastAPI) at `BACKEND_URL`, which forwards into the uAgents society so the real Deepgram/Claude/Redis agents do the work.
+
+**Architecture:**
+```
+Chrome extension  ──HTTP──▶  bridge (FastAPI)  ──Chat Protocol──▶  uAgents society (ASI:One)
+  scrape + voice + fill        /simplify                            orchestrator + 6 agents
+  draft + Needs Review         /process_field
+```
+
+**Why the bridge:** the extension speaks JSON; the agents speak the ASI:One Chat Protocol. The bridge is the thin translator. In production its routes forward to a REST endpoint on the orchestrator that uses `ctx.send_and_receive` to fan out to Interpreter + Review (sketched in `bridge/server.py`). Keeping the agents as the source of truth is what preserves the Fetch.ai prize — don't move the reasoning into the extension.
+
+**Sponsor implications:** the extension is browser-side, so for the **Deepgram** prize, stream the captured audio through the bridge to Deepgram rather than relying on Web Speech (which is fine for a quick demo but isn't a sponsor integration). **Browserbase** remains the optional *autonomous* mode (server-side fill of multi-page/login forms) alongside this *assisted* extension mode — two modes, two sponsor stories.
+
+**Demo flow:** open `web/calfresh_replica.html` (a reliable local target), click the Tribunal icon, hit **Escanear formulario**, and let it walk the form by voice — landing on the income / immigration / signature fields with a live ⚠ Needs Review flag, then stopping at a finished draft it will not submit.
+
+**24h note:** the extension + mock mode is a few hours for one person and gives you a complete, reliable demo immediately; wiring `MOCK:false` → bridge → agents is the integration step once the agents are live. Build against mock first.

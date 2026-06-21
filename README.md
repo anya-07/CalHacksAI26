@@ -47,17 +47,28 @@ Several agents, each **registered separately on Agentverse** and speaking the AS
 - **Confidence per field** + **"Needs Review"** flags on uncertain, sensitive, or risky fields (immigration status, income, household members, legal declarations, signatures), each with a plain-Spanish explanation.
 - **No quasi-legal advice** — Tribunal helps fill what the form asks and flags declarations for human review.
 
+## Front-end: Chrome extension
+
+The user-facing front-end is a Chrome extension (`extension/`). It injects a panel
+onto any web form, reads the fields, asks each one aloud in Spanish, fills the
+English answers, flags sensitive fields **Needs Review**, and builds a draft — and
+**never submits**. It runs standalone in a built-in **MOCK mode** (no backend), or
+talks to the agents through the `bridge/` HTTP gateway. Load it via
+`chrome://extensions → Developer mode → Load unpacked → select extension/`.
+
 ## Repository
 
 ```
 .
 ├── TRIBUNAL_BUILD_DOC.md     # full strategy: architecture, safety model, timeline, pitch
-└── tribunal/                 # the runnable multi-agent scaffold
-    ├── README.md             # setup + ASI:One / Agentverse registration steps
-    ├── agents/               # orchestrator + specialists (chat-protocol wired)
-    ├── client.py             # local test client (no ASI:One needed during dev)
-    ├── run_all.sh            # launch the whole agent society
-    └── requirements.txt
+├── tribunal/                 # the multi-agent backend (uAgents on ASI:One)
+│   ├── agents/               # orchestrator + 6 specialists (chat-protocol wired)
+│   ├── client.py             # local test client (no ASI:One needed during dev)
+│   ├── run_all.sh            # launch the whole agent society
+│   └── requirements.txt
+├── extension/                # Chrome extension front-end (MV3) — MOCK mode works standalone
+├── bridge/                   # FastAPI gateway: extension HTTP  ->  uAgents society
+└── web/                      # calfresh_replica.html — a reliable demo target form
 ```
 
 ## Quickstart

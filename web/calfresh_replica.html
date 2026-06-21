@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CalFresh (SNAP) Application — Replica</title>
+  <style>
+    body { font-family: -apple-system, "Segoe UI", Roboto, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; color: #1a1a1a; }
+    h1 { font-size: 22px; }
+    .gov { background: #eef2ff; border: 1px solid #c7d2fe; padding: 10px 14px; border-radius: 8px; font-size: 13px; color: #3730a3; }
+    label { display: block; margin: 18px 0 6px; font-weight: 600; }
+    input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; box-sizing: border-box; }
+    .hint { color: #64748b; font-size: 12px; margin-top: 4px; }
+    button { margin-top: 24px; background: #1d4ed8; color: #fff; border: none; padding: 12px 18px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>CalFresh (SNAP) Application</h1>
+  <p class="gov">Demo replica for testing the Tribunal extension. Not a real government form. Tribunal fills a draft and never submits.</p>
+
+  <form id="calfresh" onsubmit="event.preventDefault(); alert('You (the user) pressed submit — Tribunal never does this.');">
+    <label for="full_name">Full legal name</label>
+    <input id="full_name" name="full_name" type="text" />
+
+    <label for="home_address">Home address</label>
+    <input id="home_address" name="home_address" type="text" />
+
+    <label for="household_size">Number of people in your household</label>
+    <input id="household_size" name="household_size" type="number" />
+    <div class="hint">Include everyone who lives with you and buys/prepares food together.</div>
+
+    <label for="gross_income">Gross monthly household income (before taxes)</label>
+    <input id="gross_income" name="gross_income" type="text" />
+
+    <label for="immigration_status">Citizenship / immigration status</label>
+    <input id="immigration_status" name="immigration_status" type="text" />
+
+    <label for="signature">Signature — I declare under penalty of perjury the above is true</label>
+    <input id="signature" name="signature" type="text" />
+
+    <button type="submit">Submit application</button>
+  </form>
+</body>
+</html>
