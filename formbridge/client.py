@@ -12,7 +12,7 @@ from uagents_core.contrib.protocols.chat import ChatMessage, ChatAcknowledgement
 
 ORCHESTRATOR_ADDRESS = os.getenv("ORCHESTRATOR_ADDRESS", "<paste-orchestrator-address>")
 
-agent = Agent(name="tribunal-client", seed="tribunal-client-seed", port=8009,
+agent = Agent(name="formbridge-client", seed="tribunal-client-seed", port=8009,
               endpoint=["http://127.0.0.1:8009/submit"])
 
 
@@ -31,7 +31,7 @@ async def send(ctx: Context):
 async def on_reply(ctx: Context, sender: str, msg: ChatMessage):
     for c in msg.content:
         if isinstance(c, TextContent):
-            ctx.logger.info(f"\n=== TRIBUNAL REPLY ===\n{c.text}\n")
+            ctx.logger.info(f"\n=== FORMBRIDGE REPLY ===\n{c.text}\n")
 
 
 @agent.on_message(ChatAcknowledgement)

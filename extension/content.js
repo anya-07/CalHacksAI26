@@ -1,10 +1,10 @@
-// Tribunal content script: injects a floating panel, scrapes the form on the
+// FormBridge content script: injects a floating panel, scrapes the form on the
 // page, runs the per-field voice loop in Spanish, fills the English fields, and
 // shows confidence + "Needs Review" flags. It builds a reviewable DRAFT and
 // NEVER submits — the user always clicks submit themselves.
 
 (function () {
-  const CFG = self.TRIBUNAL_CONFIG || { LANG: "es-ES" };
+  const CFG = self.FORMBRIDGE_CONFIG || { LANG: "es-ES" };
   let panel, statusEl, questionEl, draftEl, answerInput;
   let fields = [];
   let idx = 0;
@@ -13,7 +13,7 @@
   // ---------------- API (via background -> bridge or mock) ----------------
   function api(path, body) {
     return new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage({ type: "TRIBUNAL_API", path, body }, (resp) => {
+      chrome.runtime.sendMessage({ type: "FORMBRIDGE_API", path, body }, (resp) => {
         if (chrome.runtime.lastError) return reject(chrome.runtime.lastError.message);
         if (!resp || !resp.ok) return reject(resp && resp.error);
         resolve(resp.data);
@@ -122,7 +122,7 @@
     if (idx >= fields.length) return finish();
     const f = fields[idx];
     f.el.scrollIntoView({ behavior: "smooth", block: "center" });
-    f.el.classList.add("tribunal-active");
+    f.el.classList.add("formbridge-active");
 
     const { question_es } = await api("/simplify", { label: f.label, type: f.type });
     setQuestion(question_es);
@@ -132,8 +132,8 @@
 
     const r = await api("/process_field", { label: f.label, type: f.type, answer_es });
     fillField(f.el, r.value_en);
-    f.el.classList.remove("tribunal-active");
-    if (r.needs_review) f.el.classList.add("tribunal-flag");
+    f.el.classList.remove("formbridge-active");
+    if (r.needs_review) f.el.classList.add("formbridge-flag");
     addDraftRow(f.label, r);
 
     idx++;
@@ -143,10 +143,10 @@
   function finish() {
     running = false;
     setQuestion("✅ Borrador listo / Draft ready");
-    setStatus("Revise cada campo. Tribunal NO envía el formulario — usted decide.");
+    setStatus("Revise cada campo. FormBridge NO envía el formulario — usted decide.");
     const note = document.createElement("div");
-    note.className = "tribunal-note";
-    note.textContent = "Tribunal never submits for you. Review the highlighted fields, then submit yourself.";
+    note.className = "formbridge-note";
+    note.textContent = "FormBridge never submits for you. Review the highlighted fields, then submit yourself.";
     draftEl.appendChild(note);
   }
 
@@ -156,48 +156,48 @@
 
   function addDraftRow(label, r) {
     const row = document.createElement("div");
-    row.className = "tribunal-row" + (r.needs_review ? " flag" : "");
+    row.className = "formbridge-row" + (r.needs_review ? " flag" : "");
     const pct = Math.round((r.confidence || 0) * 100);
     row.innerHTML =
-      `<div class="tribunal-row-top"><span class="tribunal-label"></span>` +
-      `<span class="tribunal-conf">${pct}%</span></div>` +
-      `<div class="tribunal-val"></div>` +
-      (r.needs_review ? `<div class="tribunal-review">⚠ Revisar: <span></span></div>` : "");
-    row.querySelector(".tribunal-label").textContent = label;
-    row.querySelector(".tribunal-val").textContent = r.value_en;
-    if (r.needs_review) row.querySelector(".tribunal-review span").textContent = r.reason_es;
+      `<div class="formbridge-row-top"><span class="formbridge-label"></span>` +
+      `<span class="formbridge-conf">${pct}%</span></div>` +
+      `<div class="formbridge-val"></div>` +
+      (r.needs_review ? `<div class="formbridge-review">⚠ Revisar: <span></span></div>` : "");
+    row.querySelector(".formbridge-label").textContent = label;
+    row.querySelector(".formbridge-val").textContent = r.value_en;
+    if (r.needs_review) row.querySelector(".formbridge-review span").textContent = r.reason_es;
     draftEl.appendChild(row);
   }
 
   function build() {
     panel = document.createElement("div");
-    panel.id = "tribunal-panel";
+    panel.id = "formbridge-panel";
     panel.innerHTML = `
-      <div id="tribunal-header">
-        <span>⚖️ Tribunal</span>
-        <button id="tribunal-close" title="Close">×</button>
+      <div id="formbridge-header">
+        <span>⚖️ FormBridge</span>
+        <button id="formbridge-close" title="Close">×</button>
       </div>
-      <div id="tribunal-question">Pulse "Escanear" para empezar.</div>
-      <div id="tribunal-status"></div>
-      <div id="tribunal-controls">
-        <button id="tribunal-start">Escanear formulario</button>
-        <button id="tribunal-stop">Detener</button>
-        <input id="tribunal-answer" type="text" placeholder="Escriba la respuesta…" />
+      <div id="formbridge-question">Pulse "Escanear" para empezar.</div>
+      <div id="formbridge-status"></div>
+      <div id="formbridge-controls">
+        <button id="formbridge-start">Escanear formulario</button>
+        <button id="formbridge-stop">Detener</button>
+        <input id="formbridge-answer" type="text" placeholder="Escriba la respuesta…" />
       </div>
-      <div id="tribunal-draft"></div>
-      <div id="tribunal-foot">Borrador solamente · nunca envía</div>`;
+      <div id="formbridge-draft"></div>
+      <div id="formbridge-foot">Borrador solamente · nunca envía</div>`;
     document.body.appendChild(panel);
-    statusEl = panel.querySelector("#tribunal-status");
-    questionEl = panel.querySelector("#tribunal-question");
-    draftEl = panel.querySelector("#tribunal-draft");
-    answerInput = panel.querySelector("#tribunal-answer");
-    panel.querySelector("#tribunal-start").onclick = start;
-    panel.querySelector("#tribunal-stop").onclick = () => { running = false; setStatus("Detenido."); };
-    panel.querySelector("#tribunal-close").onclick = () => panel.classList.add("hidden");
+    statusEl = panel.querySelector("#formbridge-status");
+    questionEl = panel.querySelector("#formbridge-question");
+    draftEl = panel.querySelector("#formbridge-draft");
+    answerInput = panel.querySelector("#formbridge-answer");
+    panel.querySelector("#formbridge-start").onclick = start;
+    panel.querySelector("#formbridge-stop").onclick = () => { running = false; setStatus("Detenido."); };
+    panel.querySelector("#formbridge-close").onclick = () => panel.classList.add("hidden");
   }
 
   chrome.runtime.onMessage.addListener((msg) => {
-    if (msg && msg.type === "TRIBUNAL_TOGGLE") {
+    if (msg && msg.type === "FORMBRIDGE_TOGGLE") {
       if (!panel) build();
       panel.classList.toggle("hidden");
     }

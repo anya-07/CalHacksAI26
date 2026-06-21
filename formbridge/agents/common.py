@@ -1,6 +1,6 @@
-"""Shared chat-protocol helpers for the Tribunal multi-agent society.
+"""Shared chat-protocol helpers for the FormBridge multi-agent society.
 
-Every Tribunal agent speaks the ASI:One Chat Protocol so they are mutually
+Every FormBridge agent speaks the ASI:One Chat Protocol so they are mutually
 discoverable on Agentverse / ASI:One and can message each other directly.
 
 For human-facing turns (ASI:One chat) we send plain text. For structured
@@ -9,16 +9,38 @@ the text body, with an "op" field naming the operation. parse() handles both:
 a JSON object becomes a dict; anything else becomes {"op": "user_text", ...}.
 """
 import json
+import os
 from datetime import datetime
 from uuid import uuid4
 
-from uagents import Protocol
+from uagents import Agent, Protocol
 from uagents_core.contrib.protocols.chat import (
     ChatMessage,
     TextContent,
     EndSessionContent,
     chat_protocol_spec,
 )
+
+
+def make_agent(name: str, port: int, seed_env: str, seed_default: str) -> Agent:
+    """Construct an agent in one of two modes.
+
+    FORMBRIDGE_LOCAL=1  -> local-dev mode: agents talk directly over 127.0.0.1, no
+                         Agentverse mailbox needed. Use this to test the per-field
+                         loop on your machine (run client.py).
+    (unset / default) -> mailbox mode: discoverable on ASI:One / Agentverse. Use
+                         this for the judged demo (create a mailbox per agent via
+                         the inspector link each agent prints on boot).
+
+    The agent's ADDRESS comes from the seed, so it's identical in both modes —
+    your *_ADDRESS values in .env stay valid either way.
+    """
+    seed = os.getenv(seed_env, seed_default)
+    if os.getenv("FORMBRIDGE_LOCAL") == "1":
+        return Agent(name=name, seed=seed, port=port,
+                     endpoint=[f"http://127.0.0.1:{port}/submit"])
+    return Agent(name=name, seed=seed, port=port,
+                 mailbox=True, publish_agent_details=True)
 
 
 def make_chat(text: str, end_session: bool = False) -> ChatMessage:

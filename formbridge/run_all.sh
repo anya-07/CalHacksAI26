@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Launch the full Tribunal agent society. Each agent prints its address on boot —
+# Launch the full FormBridge agent society. Each agent prints its address on boot —
 # paste those into .env (the *_ADDRESS vars), then restart so they can find each other.
 #
 # Boot order: leaf/specialist agents first, orchestrator last.
@@ -7,7 +7,7 @@ set -a; [ -f .env ] && . ./.env; set +a
 
 cd "$(dirname "$0")/agents"
 
-echo "Starting Tribunal agents... (Ctrl+C to stop all)"
+echo "Starting FormBridge agents... (Ctrl+C to stop all)"
 python policy_rag_agent.py   & P1=$!
 python formreader_agent.py   & P2=$!
 python dialogue_agent.py     & P3=$!

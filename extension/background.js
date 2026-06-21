@@ -1,21 +1,21 @@
 // Background service worker.
-//  - Toggles the in-page Tribunal panel when the toolbar icon is clicked.
+//  - Toggles the in-page FormBridge panel when the toolbar icon is clicked.
 //  - Acts as the API gateway: content script -> background -> bridge server.
 //    (Doing fetch here avoids page CORS restrictions; host_permissions covers it.)
 //  - In MOCK mode it answers with built-in stub logic so the extension demos
 //    standalone with no backend running.
 
 importScripts("config.js");
-const CFG = self.TRIBUNAL_CONFIG;
+const CFG = self.FORMBRIDGE_CONFIG;
 
 // ---- toolbar click -> tell the active tab to show/hide the panel ----
 chrome.action.onClicked.addListener((tab) => {
-  if (tab.id) chrome.tabs.sendMessage(tab.id, { type: "TRIBUNAL_TOGGLE" });
+  if (tab.id) chrome.tabs.sendMessage(tab.id, { type: "FORMBRIDGE_TOGGLE" });
 });
 
 // ---- API routing ----
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-  if (msg && msg.type === "TRIBUNAL_API") {
+  if (msg && msg.type === "FORMBRIDGE_API") {
     handleApi(msg.path, msg.body)
       .then((data) => sendResponse({ ok: true, data }))
       .catch((err) => sendResponse({ ok: false, error: String(err) }));

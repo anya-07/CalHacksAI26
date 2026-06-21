@@ -1,8 +1,8 @@
-# TRIBUNAL — Build Doc
+# FormBridge — Build Doc
 
 **A voice-first AI form advocate that helps Spanish-speaking residents complete confusing English-language forms — safely, transparently, and under their control.**
 
-The user uploads or selects a form they need help with (CalFresh/SNAP, rental or housing assistance, utility-bill relief, emergency-aid intake, or basic legal-aid intake). Tribunal reads the form, finds each field, and turns each confusing English question into a simple **spoken question in Spanish**. The user answers naturally by voice; Tribunal transcribes, understands the meaning, and writes the correct **English** answer into the field. It then fills a **draft** of the form in English, reads every answer back in Spanish for verification, and **never submits automatically** — it prepares a reviewable draft and pauses for confirmation. Each field gets a **confidence score**, and uncertain, sensitive, or risky fields (immigration status, income, household members, legal declarations, signatures) are flagged **"Needs Review"** with a plain-Spanish explanation.
+The user uploads or selects a form they need help with (CalFresh/SNAP, rental or housing assistance, utility-bill relief, emergency-aid intake, or basic legal-aid intake). FormBridge reads the form, finds each field, and turns each confusing English question into a simple **spoken question in Spanish**. The user answers naturally by voice; FormBridge transcribes, understands the meaning, and writes the correct **English** answer into the field. It then fills a **draft** of the form in English, reads every answer back in Spanish for verification, and **never submits automatically** — it prepares a reviewable draft and pauses for confirmation. Each field gets a **confidence score**, and uncertain, sensitive, or risky fields (immigration status, income, household members, legal declarations, signatures) are flagged **"Needs Review"** with a plain-Spanish explanation.
 
 - **Track:** DDOSKI'S WORLD (technology + social impact)
 - **Team:** 3 strong CS students, 24 hours
@@ -13,14 +13,14 @@ The user uploads or selects a form they need help with (CalFresh/SNAP, rental or
 
 ## 1. Why this wins (read this first)
 
-Hackathon prizes are won on a **memorable, working demo + a story judges repeat to each other**, and increasingly on **responsible-AI judgment**. Tribunal is engineered so the same architecture that makes the demo emotional also (a) stacks sponsor prizes and (b) tells a safety story most teams ignore. Four things make it award-winning:
+Hackathon prizes are won on a **memorable, working demo + a story judges repeat to each other**, and increasingly on **responsible-AI judgment**. FormBridge is engineered so the same architecture that makes the demo emotional also (a) stacks sponsor prizes and (b) tells a safety story most teams ignore. Four things make it award-winning:
 
 1. **It does something real, live.** A real English benefits form on screen. The user *speaks Spanish*, and the English fields fill in, one by one, with the agent's reasoning visible. The "it actually understood her and filled the form" moment is what judges remember at 2am.
 2. **It's a genuine multi-agent society, visible on Agentverse.** The Fetch.ai prize specifically rewards multi-agent collaboration. You'll have several separately-registered agents messaging each other over the ASI:One Chat Protocol. Judges can open Agentverse and *see* the network. ~80% of ASI:One submissions are a single agent — yours won't be.
 3. **Safety is the feature, not a disclaimer.** Confidence scores + "Needs Review" flags + read-back verification + never-auto-submit is exactly the human-in-the-loop, trust-first design that wins "responsible AI" and social-impact judging. It also disarms the judge's #1 fear: "what if it fills something wrong on a legal document?"
-4. **The impact is concrete.** Not "AI for good." It's "a monolingual Spanish-speaking mother completes a housing-assistance form she couldn't read — and Tribunal flags the legal-declaration field so she doesn't sign something she doesn't understand." Specific person, specific barrier, specific safeguard.
+4. **The impact is concrete.** Not "AI for good." It's "a monolingual Spanish-speaking mother completes a housing-assistance form she couldn't read — and FormBridge flags the legal-declaration field so she doesn't sign something she doesn't understand." Specific person, specific barrier, specific safeguard.
 
-**The one-sentence pitch:** *"Tribunal is a network of AI agents on ASI:One that lets a Spanish-speaking resident fill out an intimidating English government form just by talking — it asks each question simply in Spanish, writes the correct English answer, flags anything risky for review, and never submits without their say-so."*
+**The one-sentence pitch:** *"FormBridge is a network of AI agents on ASI:One that lets a Spanish-speaking resident fill out an intimidating English government form just by talking — it asks each question simply in Spanish, writes the correct English answer, flags anything risky for review, and never submits without their say-so."*
 
 ---
 
@@ -78,7 +78,7 @@ Every box is its own `uagents.Agent` with `mailbox=True` and `publish_agent_deta
 ### Cross-cutting (more prizes, low marginal cost)
 
 - **Browserbase (optional, keeps the prize alive):** for forms that live online, use a Browserbase session to fetch the live form and type the *draft* values into the real web page (still **stopping before submit**). This is the "autonomous" mode alongside the assisted upload mode.
-- **Arize Phoenix:** the standout fit now — evaluate **confidence calibration**. Show that fields Tribunal marked high-confidence really were correct, and that "Needs Review" caught the genuinely ambiguous ones. A calibration/observability dashboard over the agent network is a category win almost nobody else will have.
+- **Arize Phoenix:** the standout fit now — evaluate **confidence calibration**. Show that fields FormBridge marked high-confidence really were correct, and that "Needs Review" caught the genuinely ambiguous ones. A calibration/observability dashboard over the agent network is a category win almost nobody else will have.
 - **Pika (optional):** a short Spanish explainer video — "here's what you filled in and what to bring to submit it."
 
 > **Model strategy:** Use ASI:One for the orchestrator's routing/intent (justifies the ASI:One prize) and **Claude for the hard language work** — form parsing, question simplification, answer interpretation, confidence reasoning (justifies the Anthropic prize). Both legitimate; both judges happy.
@@ -87,11 +87,11 @@ Every box is its own `uagents.Agent` with `mailbox=True` and `publish_agent_deta
 
 ## 3. The safety model (this is a headline feature — demo it explicitly)
 
-- **Never auto-submits.** Tribunal produces a reviewable English draft and stops. The human submits or prints.
+- **Never auto-submits.** FormBridge produces a reviewable English draft and stops. The human submits or prints.
 - **Read-back verification.** Every answer is spoken back in Spanish before anything is finalized, so the user catches errors in their own language.
 - **Confidence per field.** Each field carries a score reflecting how clear the user's answer was.
 - **"Needs Review" flags.** Sensitive or risky fields — immigration status, income, household members, legal declarations, signatures — and any low-confidence answer are flagged with a simple Spanish explanation of why to double-check.
-- **No quasi-legal advice.** Tribunal helps fill what the form asks; it does not advise on immigration or legal strategy. For legal-aid intake it collects intake facts only and flags declarations for human review.
+- **No quasi-legal advice.** FormBridge helps fill what the form asks; it does not advise on immigration or legal strategy. For legal-aid intake it collects intake facts only and flags declarations for human review.
 
 This human-in-the-loop design is the single biggest differentiator from a generic AI autofill tool — lead with it.
 
@@ -142,7 +142,7 @@ The cardinal rule: **prove the riskiest thing first.** The riskiest things here 
 - Optional: Browserbase autonomous fill; Pika explainer video.
 
 ### Phase 4 — Ship the win (Hours 19–23)
-- Strong **Agentverse READMEs + handles/tags** per agent (e.g. `@tribunal-interpreter`) — discoverability is a literal judged ranking criterion in Fetch's docs.
+- Strong **Agentverse READMEs + handles/tags** per agent (e.g. `@formbridge-interpreter`) — discoverability is a literal judged ranking criterion in Fetch's docs.
 - Build the pitch (Section 7) + rehearse the live voice demo 3 times **in Spanish**.
 - **Record a backup demo video** of the full happy path. A live crash must not sink you.
 
@@ -154,19 +154,19 @@ The cardinal rule: **prove the riskiest thing first.** The riskiest things here 
 ## 6. What separates 1st place from "nice project"
 
 - **Do the demo by voice, in Spanish.** Don't describe the accessibility — perform it. Have a Spanish-speaking teammate (or a recording) actually talk to it on stage.
-- **Make the "Needs Review" flag fire live.** Reach a field like immigration status or a signature/legal declaration and let Tribunal visibly flag it with a Spanish explanation. That single moment sells the entire safety thesis.
+- **Make the "Needs Review" flag fire live.** Reach a field like immigration status or a signature/legal declaration and let FormBridge visibly flag it with a Spanish explanation. That single moment sells the entire safety thesis.
 - **Show the agent network.** Pull up Agentverse during judging — several agents, their handles, a live message passing between them. The Fetch prize clincher.
 - **Show calibration, not just accuracy.** The Arize chart proving confidence scores are trustworthy is what separates a toy from a tool.
-- **One human story, with a safeguard.** Open and close on a specific person — and on the field Tribunal *stopped her from getting wrong*.
+- **One human story, with a safeguard.** Open and close on a specific person — and on the field FormBridge *stopped her from getting wrong*.
 
 ---
 
 ## 7. The 3-minute pitch (script skeleton)
 
 1. **The gap (0:00–0:30):** "Millions of people who qualify for food, housing, and utility help never get it — because the forms are in English, full of jargon, and terrifying to get wrong. Meet María." Put a face on screen.
-2. **Live demo (0:30–2:05):** María selects a CalFresh form. Tribunal asks each question aloud in simple Spanish; she answers by voice; the English fields fill in. The agent network lights up — FormReader → Interpreter → Dialogue → Review. At the income/legal field, Tribunal **flags "Needs Review"** in Spanish. It reads the full draft back in Spanish; María confirms. **Nothing is submitted.**
+2. **Live demo (0:30–2:05):** María selects a CalFresh form. FormBridge asks each question aloud in simple Spanish; she answers by voice; the English fields fill in. The agent network lights up — FormReader → Interpreter → Dialogue → Review. At the income/legal field, FormBridge **flags "Needs Review"** in Spanish. It reads the full draft back in Spanish; María confirms. **Nothing is submitted.**
 3. **Under the hood (2:05–2:40):** Flash the Agentverse view (discoverable agents on ASI:One) + the Arize calibration chart. "This isn't one chatbot — it's a society of specialist agents anyone can discover on ASI:One, and it's built to know when *not* to be confident."
-4. **The close (2:40–3:00):** "Same architecture works for housing, utility relief, emergency aid, and legal-aid intake. Tribunal turns a form that excludes you into a conversation in your language — safe, transparent, and always under your control."
+4. **The close (2:40–3:00):** "Same architecture works for housing, utility relief, emergency aid, and legal-aid intake. FormBridge turns a form that excludes you into a conversation in your language — safe, transparent, and always under your control."
 
 ---
 
@@ -184,7 +184,7 @@ The cardinal rule: **prove the riskiest thing first.** The riskiest things here 
 
 ## 9. How the repo scaffold maps to this doc
 
-See the `tribunal/` folder — the multi-agent skeleton, already wired over the chat protocol. The current scaffold uses the earlier agent names (orchestrator, eligibility, policy_rag, formfiller, translator); to match this final design, the mapping is:
+See the `formbridge/` folder — the multi-agent skeleton, already wired over the chat protocol. The current scaffold uses the earlier agent names (orchestrator, eligibility, policy_rag, formfiller, translator); to match this final design, the mapping is:
 
 - `orchestrator.py` → **OrchestratorAgent** (add the per-field loop + draft/verify, never-submit).
 - `translator_agent.py` → split into **DialogueAgent** (Deepgram TTS/STT) and the question-simplification half of **InterpreterAgent**.
@@ -217,6 +217,6 @@ Chrome extension  ──HTTP──▶  bridge (FastAPI)  ──Chat Protocol─�
 
 **Sponsor implications:** the extension is browser-side, so for the **Deepgram** prize, stream the captured audio through the bridge to Deepgram rather than relying on Web Speech (which is fine for a quick demo but isn't a sponsor integration). **Browserbase** remains the optional *autonomous* mode (server-side fill of multi-page/login forms) alongside this *assisted* extension mode — two modes, two sponsor stories.
 
-**Demo flow:** open `web/calfresh_replica.html` (a reliable local target), click the Tribunal icon, hit **Escanear formulario**, and let it walk the form by voice — landing on the income / immigration / signature fields with a live ⚠ Needs Review flag, then stopping at a finished draft it will not submit.
+**Demo flow:** open `web/calfresh_replica.html` (a reliable local target), click the FormBridge icon, hit **Escanear formulario**, and let it walk the form by voice — landing on the income / immigration / signature fields with a live ⚠ Needs Review flag, then stopping at a finished draft it will not submit.
 
 **24h note:** the extension + mock mode is a few hours for one person and gives you a complete, reliable demo immediately; wiring `MOCK:false` → bridge → agents is the integration step once the agents are live. Build against mock first.

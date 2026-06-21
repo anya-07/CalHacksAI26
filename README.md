@@ -1,8 +1,8 @@
-# ⚖️ Tribunal
+# ⚖️ FormBridge
 
 **A voice-first AI form advocate that helps Spanish-speaking residents complete confusing English-language forms — safely, transparently, and under their control.**
 
-Tribunal helps people fill out high-impact public forms — CalFresh/SNAP, rental & housing assistance, utility-bill relief, emergency-aid intake, and basic legal-aid intake. You upload or select a form; Tribunal reads it, turns each confusing English question into a **simple spoken question in Spanish**, listens to your answer by voice, and writes the correct **English** answer into the field. It prepares a reviewable **draft**, reads every answer back to you in Spanish, flags anything risky for review — and **never submits automatically**.
+FormBridge helps people fill out high-impact public forms — CalFresh/SNAP, rental & housing assistance, utility-bill relief, emergency-aid intake, and basic legal-aid intake. You upload or select a form; FormBridge reads it, turns each confusing English question into a **simple spoken question in Spanish**, listens to your answer by voice, and writes the correct **English** answer into the field. It prepares a reviewable **draft**, reads every answer back to you in Spanish, flags anything risky for review — and **never submits automatically**.
 
 > Built in 24h for Hackathons @ Berkeley — **DDOSKI'S WORLD** (technology + social impact).
 > First version: **Spanish ⇄ English**, a small set of high-impact forms, **draft only — no auto-submit.**
@@ -11,11 +11,11 @@ Tribunal helps people fill out high-impact public forms — CalFresh/SNAP, renta
 
 ## The problem
 
-Millions of people who qualify for food, housing, and utility help never get it — not because they don't qualify, but because the forms are in English, full of bureaucratic jargon, and frightening to get wrong. Language, literacy, and technology barriers turn a benefit you're entitled to into a wall. Tribunal turns that wall into a conversation in your own language.
+Millions of people who qualify for food, housing, and utility help never get it — not because they don't qualify, but because the forms are in English, full of bureaucratic jargon, and frightening to get wrong. Language, literacy, and technology barriers turn a benefit you're entitled to into a wall. FormBridge turns that wall into a conversation in your own language.
 
 ## How it works
 
-For each field on the form, Tribunal runs a per-field voice loop, then stops for your review:
+For each field on the form, FormBridge runs a per-field voice loop, then stops for your review:
 
 ```
 upload/select form ─▶ [ FormReader ] ─▶ for each field:
@@ -26,7 +26,7 @@ upload/select form ─▶ [ FormReader ] ─▶ for each field:
                                           └─ [ Review ]      confidence score + "Needs Review"
                                        ▼
                           English DRAFT  ──▶  read back in Spanish  ──▶  you confirm
-                                            (Tribunal NEVER submits on its own)
+                                            (FormBridge NEVER submits on its own)
 ```
 
 Several agents, each **registered separately on Agentverse** and speaking the ASI:One **Chat Protocol**, so they're mutually discoverable and message each other directly. That agent-to-agent collaboration is the heart of the system.
@@ -45,7 +45,7 @@ Several agents, each **registered separately on Agentverse** and speaking the AS
 - **Never auto-submits** — produces a reviewable draft and pauses for confirmation.
 - **Read-back verification** — every answer is spoken back in Spanish so you catch errors in your own language.
 - **Confidence per field** + **"Needs Review"** flags on uncertain, sensitive, or risky fields (immigration status, income, household members, legal declarations, signatures), each with a plain-Spanish explanation.
-- **No quasi-legal advice** — Tribunal helps fill what the form asks and flags declarations for human review.
+- **No quasi-legal advice** — FormBridge helps fill what the form asks and flags declarations for human review.
 
 ## Front-end: Chrome extension
 
@@ -60,8 +60,8 @@ talks to the agents through the `bridge/` HTTP gateway. Load it via
 
 ```
 .
-├── TRIBUNAL_BUILD_DOC.md     # full strategy: architecture, safety model, timeline, pitch
-├── tribunal/                 # the multi-agent backend (uAgents on ASI:One)
+├── FORMBRIDGE_BUILD_DOC.md     # full strategy: architecture, safety model, timeline, pitch
+├── formbridge/                 # the multi-agent backend (uAgents on ASI:One)
 │   ├── agents/               # orchestrator + 6 specialists (chat-protocol wired)
 │   ├── client.py             # local test client (no ASI:One needed during dev)
 │   ├── run_all.sh            # launch the whole agent society
@@ -74,14 +74,14 @@ talks to the agents through the `bridge/` HTTP gateway. Load it via
 ## Quickstart
 
 ```bash
-cd tribunal
+cd formbridge
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env          # add your keys
 bash run_all.sh               # boot the agents
 ```
 
-See [`tribunal/README.md`](tribunal/README.md) to run it and [`TRIBUNAL_BUILD_DOC.md`](TRIBUNAL_BUILD_DOC.md) for the full build plan.
+See [`formbridge/README.md`](formbridge/README.md) to run it and [`FORMBRIDGE_BUILD_DOC.md`](FORMBRIDGE_BUILD_DOC.md) for the full build plan.
 
 ## Team
 

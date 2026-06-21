@@ -5,7 +5,7 @@ The single "translator" was split into two clearer agents:
   - interpreter_agent.py (Claude language work: EN question -> ES, ES answer -> EN value)
 
 This file is intentionally a no-op. Do not run it.
-See ../TRIBUNAL_BUILD_DOC.md §2 and §9.
+See ../FORMBRIDGE_BUILD_DOC.md §2 and §9.
 """
 if __name__ == "__main__":
     raise SystemExit(

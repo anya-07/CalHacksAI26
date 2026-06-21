@@ -15,15 +15,10 @@ from datetime import datetime
 from uagents import Agent, Context
 from uagents_core.contrib.protocols.chat import ChatMessage, ChatAcknowledgement
 
-from common import jmsg, parse, chat_proto
+from common import jmsg, parse, chat_proto, make_agent
 
-agent = Agent(
-    name="tribunal-policy-rag",
-    seed=os.getenv("POLICY_RAG_SEED", "tribunal-policy-rag-seed-CHANGE-ME"),
-    port=8005,
-    mailbox=True,
-    publish_agent_details=True,
-)
+agent = make_agent("formbridge-policy-rag", 8005, "POLICY_RAG_SEED",
+                   "tribunal-policy-rag-seed-CHANGE-ME")
 
 proto = chat_proto()
 

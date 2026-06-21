@@ -9,7 +9,7 @@ Two reasons a field gets flagged "Needs Review":
   2. The answer was UNCLEAR — low confidence that the Spanish answer mapped
      cleanly to a correct English value.
 
-This human-in-the-loop check is Tribunal's headline differentiator. Pair it with
+This human-in-the-loop check is FormBridge's headline differentiator. Pair it with
 Arize to show the confidence scores are well-calibrated.
 """
 import os
@@ -18,15 +18,10 @@ from datetime import datetime
 from uagents import Agent, Context
 from uagents_core.contrib.protocols.chat import ChatMessage, ChatAcknowledgement
 
-from common import jmsg, parse, chat_proto
+from common import jmsg, parse, chat_proto, make_agent
 
-agent = Agent(
-    name="tribunal-review",
-    seed=os.getenv("REVIEW_SEED", "tribunal-review-seed-CHANGE-ME"),
-    port=8004,
-    mailbox=True,
-    publish_agent_details=True,
-)
+agent = make_agent("formbridge-review", 8004, "REVIEW_SEED",
+                   "tribunal-review-seed-CHANGE-ME")
 
 proto = chat_proto()
 

@@ -16,15 +16,10 @@ from datetime import datetime
 from uagents import Agent, Context
 from uagents_core.contrib.protocols.chat import ChatMessage, ChatAcknowledgement
 
-from common import jmsg, parse, chat_proto
+from common import jmsg, parse, chat_proto, make_agent
 
-agent = Agent(
-    name="tribunal-dialogue",
-    seed=os.getenv("DIALOGUE_SEED", "tribunal-dialogue-seed-CHANGE-ME"),
-    port=8002,
-    mailbox=True,
-    publish_agent_details=True,
-)
+agent = make_agent("formbridge-dialogue", 8002, "DIALOGUE_SEED",
+                   "tribunal-dialogue-seed-CHANGE-ME")
 
 proto = chat_proto()
 

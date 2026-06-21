@@ -6,7 +6,7 @@ per-field form advocate. The reasoning role is now split across:
   - interpreter_agent.py (simplify EN questions, convert ES answers -> EN values)
 
 This file is intentionally left as a no-op so old references don't break.
-Do not run it. See ../TRIBUNAL_BUILD_DOC.md §2 and §9.
+Do not run it. See ../FORMBRIDGE_BUILD_DOC.md §2 and §9.
 """
 if __name__ == "__main__":
     raise SystemExit(

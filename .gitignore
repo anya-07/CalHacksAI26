@@ -13,3 +13,7 @@ node_modules/
 
 # os
 .DS_Store
+
+# editor/mount ghost files
+.fuse_hidden*
+.__wtest

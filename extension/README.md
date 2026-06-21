@@ -1,6 +1,6 @@
-# Tribunal — Chrome extension (front-end)
+# FormBridge — Chrome extension (front-end)
 
-The consumer-facing front-end for Tribunal. It injects a panel onto any web form,
+The consumer-facing front-end for FormBridge. It injects a panel onto any web form,
 reads the fields, asks each one as a simple **spoken question in Spanish**, fills
 the **English** answer back in, scores confidence, flags sensitive fields as
 **Needs Review**, and builds a draft. It **never submits** — the user does.
@@ -9,7 +9,7 @@ the **English** answer back in, scores confidence, flags sensitive fields as
 1. Open `chrome://extensions`
 2. Turn on **Developer mode** (top-right)
 3. Click **Load unpacked** and select this `extension/` folder
-4. Pin the puzzle-piece icon, open any page with a form, and click the **Tribunal** icon to toggle the panel
+4. Pin the puzzle-piece icon, open any page with a form, and click the **FormBridge** icon to toggle the panel
 5. Click **Escanear formulario** — it walks each field by voice and fills a draft
 
 > Demo target: open `../web/calfresh_replica.html` (if present) or any web form.

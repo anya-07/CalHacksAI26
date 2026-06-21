@@ -13,15 +13,10 @@ from datetime import datetime
 from uagents import Agent, Context
 from uagents_core.contrib.protocols.chat import ChatMessage, ChatAcknowledgement
 
-from common import jmsg, parse, chat_proto
+from common import jmsg, parse, chat_proto, make_agent
 
-agent = Agent(
-    name="tribunal-formreader",
-    seed=os.getenv("FORMREADER_SEED", "tribunal-formreader-seed-CHANGE-ME"),
-    port=8001,
-    mailbox=True,
-    publish_agent_details=True,
-)
+agent = make_agent("formbridge-formreader", 8001, "FORMREADER_SEED",
+                   "tribunal-formreader-seed-CHANGE-ME")
 
 proto = chat_proto()
 

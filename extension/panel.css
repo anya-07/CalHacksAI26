@@ -1,4 +1,4 @@
-#tribunal-panel {
+#formbridge-panel {
   position: fixed;
   top: 16px;
   right: 16px;
@@ -14,9 +14,9 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   border: 1px solid #2a2a35;
 }
-#tribunal-panel.hidden { display: none; }
+#formbridge-panel.hidden { display: none; }
 
-#tribunal-header {
+#formbridge-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -25,50 +25,50 @@
   font-size: 16px;
   border-bottom: 1px solid #2a2a35;
 }
-#tribunal-close {
+#formbridge-close {
   background: none; border: none; color: #aaa; font-size: 20px; cursor: pointer; line-height: 1;
 }
 
-#tribunal-question {
+#formbridge-question {
   padding: 14px;
   font-size: 16px;
   line-height: 1.4;
   background: #16161d;
 }
-#tribunal-status { padding: 6px 14px; color: #9aa0aa; min-height: 18px; }
+#formbridge-status { padding: 6px 14px; color: #9aa0aa; min-height: 18px; }
 
-#tribunal-controls {
+#formbridge-controls {
   display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 14px;
 }
-#tribunal-controls button {
+#formbridge-controls button {
   background: #5b3df5; color: #fff; border: none; border-radius: 8px;
   padding: 8px 12px; font-weight: 600; cursor: pointer;
 }
-#tribunal-controls button#tribunal-stop { background: #2a2a35; }
-#tribunal-answer {
+#formbridge-controls button#formbridge-stop { background: #2a2a35; }
+#formbridge-answer {
   flex: 1 1 100%; background: #16161d; border: 1px solid #2a2a35; color: #fff;
   border-radius: 8px; padding: 8px 10px;
 }
 
-#tribunal-draft { padding: 6px 14px 12px; }
-.tribunal-row {
+#formbridge-draft { padding: 6px 14px 12px; }
+.formbridge-row {
   background: #16161d; border: 1px solid #2a2a35; border-radius: 10px;
   padding: 8px 10px; margin-top: 8px;
 }
-.tribunal-row.flag { border-color: #e6a800; background: #211d12; }
-.tribunal-row-top { display: flex; justify-content: space-between; }
-.tribunal-label { color: #c7cbd4; font-size: 12px; }
-.tribunal-conf { color: #7de28a; font-size: 12px; font-weight: 700; }
-.tribunal-row.flag .tribunal-conf { color: #e6a800; }
-.tribunal-val { font-weight: 600; margin-top: 2px; word-break: break-word; }
-.tribunal-review { color: #ffcf5c; font-size: 12px; margin-top: 6px; }
+.formbridge-row.flag { border-color: #e6a800; background: #211d12; }
+.formbridge-row-top { display: flex; justify-content: space-between; }
+.formbridge-label { color: #c7cbd4; font-size: 12px; }
+.formbridge-conf { color: #7de28a; font-size: 12px; font-weight: 700; }
+.formbridge-row.flag .formbridge-conf { color: #e6a800; }
+.formbridge-val { font-weight: 600; margin-top: 2px; word-break: break-word; }
+.formbridge-review { color: #ffcf5c; font-size: 12px; margin-top: 6px; }
 
-.tribunal-note {
+.formbridge-note {
   margin-top: 10px; padding: 10px; border-radius: 8px;
   background: #12211a; color: #8fe6b0; font-size: 12px; line-height: 1.4;
 }
-#tribunal-foot { padding: 8px 14px 12px; color: #6b7280; font-size: 11px; }
+#formbridge-foot { padding: 8px 14px 12px; color: #6b7280; font-size: 11px; }
 
 /* page-side highlights on the actual form fields */
-.tribunal-active { outline: 3px solid #5b3df5 !important; outline-offset: 2px; }
-.tribunal-flag { outline: 3px solid #e6a800 !important; outline-offset: 2px; }
+.formbridge-active { outline: 3px solid #5b3df5 !important; outline-offset: 2px; }
+.formbridge-flag { outline: 3px solid #e6a800 !important; outline-offset: 2px; }

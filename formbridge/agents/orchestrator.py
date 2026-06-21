@@ -1,4 +1,4 @@
-"""OrchestratorAgent — the 'face' of Tribunal on ASI:One.
+"""OrchestratorAgent — the 'face' of FormBridge on ASI:One.
 
 Receives a request to fill a form (from ASI:One chat, the local client, or a
 front-end), then runs the PER-FIELD LOOP by delegating to specialist agents
@@ -12,7 +12,7 @@ over the chat protocol:
        c. orchestrator -> Interpreter : turn the Spanish answer -> correct English value
        d. orchestrator -> Review      : confidence score + "Needs Review" flag
   4. orchestrator assembles an English DRAFT, reads it back in Spanish, and STOPS.
-     Tribunal NEVER submits automatically.
+     FormBridge NEVER submits automatically.
 
 This agent-to-agent delegation is the multi-agent collaboration the Fetch.ai
 prize rewards. Each specialist is its own registered Agentverse agent.
@@ -27,20 +27,16 @@ from datetime import datetime
 from uagents import Agent, Context
 from uagents_core.contrib.protocols.chat import ChatMessage, ChatAcknowledgement
 
-from common import make_chat, jmsg, parse, chat_proto
+from common import make_chat, jmsg, parse, chat_proto, make_agent
 
 FORMREADER = os.getenv("FORMREADER_ADDRESS", "")
 INTERPRETER = os.getenv("INTERPRETER_ADDRESS", "")
 DIALOGUE = os.getenv("DIALOGUE_ADDRESS", "")
 REVIEW = os.getenv("REVIEW_ADDRESS", "")
 
-agent = Agent(
-    name="tribunal-orchestrator",
-    seed=os.getenv("ORCH_SEED", "tribunal-orchestrator-seed-CHANGE-ME"),
-    port=8000,
-    mailbox=True,
-    publish_agent_details=True,
-)
+# 8000 is often taken; override via ORCH_PORT
+agent = make_agent("formbridge-orchestrator", int(os.getenv("ORCH_PORT", "8010")),
+                   "ORCH_SEED", "tribunal-orchestrator-seed-CHANGE-ME")
 
 proto = chat_proto()
 
@@ -165,7 +161,7 @@ async def _finish(ctx: Context):
     """Assemble the draft, read it back in Spanish, and STOP (never submit)."""
     draft = _get(ctx, "draft", {})
     origin = _get(ctx, "origin")
-    lines = ["DRAFT (review before submitting — Tribunal will NOT submit for you):", ""]
+    lines = ["DRAFT (review before submitting — FormBridge will NOT submit for you):", ""]
     flagged = []
     for f in draft.values():
         tag = "  ⚠ NEEDS REVIEW" if f["needs_review"] else ""

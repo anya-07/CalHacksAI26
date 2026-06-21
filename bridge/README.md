@@ -1,4 +1,4 @@
-# Tribunal bridge
+# FormBridge bridge
 
 HTTP gateway between the Chrome extension (JSON) and the agents (ASI:One Chat
 Protocol). Lets the browser front-end drive the per-field loop.

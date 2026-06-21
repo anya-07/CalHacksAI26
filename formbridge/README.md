@@ -1,4 +1,4 @@
-# Tribunal — voice-first AI form advocate on ASI:One
+# FormBridge — voice-first AI form advocate on ASI:One
 
 A society of AI agents that helps Spanish-speaking residents fill out confusing
 English government forms by voice — and **never submits for them**. Built on
@@ -64,7 +64,7 @@ signature). Nothing is submitted.
 2. Each agent runs with `mailbox=True` + `publish_agent_details=True`, so on boot it
    prints an **Agent Inspector** link. Open it, click **Connect → Mailbox**.
 3. From the Inspector, open the agent's Agentverse dashboard, set a clear **name,
-   handle, and README** (e.g. `@tribunal`), then **Chat with Agent** to talk to it
+   handle, and README** (e.g. `@formbridge`), then **Chat with Agent** to talk to it
    through ASI:One. Keep the processes **running** during judging or the agents drop
    off the Almanac.
 
@@ -74,7 +74,7 @@ Reference: https://uagents.fetch.ai/docs/examples/asi-1
 Get `orchestrator` + `interpreter` talking first (proves multi-agent), then fill
 the other stubs in parallel. The riskiest pieces to nail early are the Deepgram
 voice round-trip (`dialogue`) and the Spanish↔English language work (`interpreter`).
-Full strategy, timeline, demo script, and pitch are in `../TRIBUNAL_BUILD_DOC.md`.
+Full strategy, timeline, demo script, and pitch are in `../FORMBRIDGE_BUILD_DOC.md`.
 
 ## Notes
 - Inter-agent calls use a tiny JSON-over-chat convention (`{"op": ...}`); see

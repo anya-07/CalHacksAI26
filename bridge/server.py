@@ -1,6 +1,6 @@
 """Bridge server — HTTP gateway between the Chrome extension and the agents.
 
-The extension speaks plain HTTP/JSON; the Tribunal agents speak the ASI:One Chat
+The extension speaks plain HTTP/JSON; the FormBridge agents speak the ASI:One Chat
 Protocol. This FastAPI app is the thin translation layer in between. Two routes
 mirror the agent ops used by the per-field loop:
 
@@ -19,7 +19,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-app = FastAPI(title="Tribunal bridge")
+app = FastAPI(title="FormBridge bridge")
 
 # The extension calls from web pages / the service worker; allow it.
 app.add_middleware(

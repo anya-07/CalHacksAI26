@@ -1,12 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "Tribunal — Form Advocate",
+  "name": "FormBridge — Form Advocate",
   "version": "0.1.0",
   "description": "Voice-first help for filling English forms in Spanish. Prepares a reviewable draft — never submits.",
   "permissions": ["activeTab", "scripting", "storage"],
   "host_permissions": ["http://localhost:8088/*"],
   "background": { "service_worker": "background.js" },
-  "action": { "default_title": "Open Tribunal" },
+  "action": { "default_title": "Open FormBridge" },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
