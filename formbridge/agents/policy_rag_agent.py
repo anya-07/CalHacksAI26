@@ -38,7 +38,9 @@ def _redis_client():
         try:
             import redis
             url = os.getenv("REDIS_URL", "")
-            r = redis.Redis.from_url(url, decode_responses=True) if url else None
+            # short timeouts so a slow/unreachable Redis can never freeze the agent
+            r = redis.Redis.from_url(url, decode_responses=True,
+                                     socket_connect_timeout=2, socket_timeout=2) if url else None
             if r:
                 r.ping()
                 for k, v in _STUB_DEFS.items():
