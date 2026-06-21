@@ -18,8 +18,10 @@ agent = Agent(name="tribunal-client", seed="tribunal-client-seed", port=8009,
 
 @agent.on_event("startup")
 async def send(ctx: Context):
-    demo = ("I'm 68, live alone in Berkeley, monolingual Spanish, monthly income "
-            "about $1100 from social security. Do I qualify for food benefits?")
+    # Kick off the per-field loop. The orchestrator parses the form, then asks
+    # each question in Spanish, fills the English draft, flags risky fields, and
+    # replies with a reviewable draft (it never submits).
+    demo = "Help me fill out the CalFresh food benefits form."
     await ctx.send(ORCHESTRATOR_ADDRESS, ChatMessage(
         timestamp=datetime.utcnow(), msg_id=uuid4(),
         content=[TextContent(type="text", text=demo)]))
